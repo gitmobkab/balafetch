@@ -1,9 +1,19 @@
 # balafetch
 
 ![preview](imgs/preview.gif "preview gif")
-![example 1](imgs/example1.png "example 1")
-![example 2](imgs/example2.png "example 2")
-![example 3](imgs/example3.png "example 3")
+
+<table>
+  <tr>
+    <td><img src="imgs/example1.png" width="500"></td>
+    <td><img src="imgs/example2.png" width="500"></td>
+    <td><img src="imgs/example3.png" width="500"></td>
+  </tr>
+  <tr>
+    <td align="center">Example 1</td>
+    <td align="center">Example 2</td>
+    <td align="center">Example 3</td>
+  </tr>
+</table>
 
 ## Summary
 
