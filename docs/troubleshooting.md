@@ -153,7 +153,7 @@ In this case, you're good to go. This is the intended behavior.
 
 Fastfetch displays but **without** a Balatro card as the logo.
 
-![default fastfetch example](../imgs/default_fastfetch.png "default fastfetch example")
+![default fastfetch example](../imgs/balafetch_default_fastfetch.png "default fastfetch example")
 
 This happens only when balafetch encounters a fallible error.
 
