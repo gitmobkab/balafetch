@@ -2,7 +2,7 @@
 
 To this day, balafetch registers 5 exit codes.
 
-You might refer to these if you plan to write a script with balafetch or are debugging issues.
+You might refer to these if you plan to write a script with balafetch or when debugging balafetch.
 
 ## Exit Codes Table
 
