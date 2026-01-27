@@ -9,15 +9,7 @@ import (
 	"github.com/gitmobkab/balafetch/internal/imageutil"
 	"github.com/gitmobkab/balafetch/internal/model"
 	"github.com/gitmobkab/balafetch/internal/random"
-)
-
-
-const (
-	SuccessCode = iota
-	RequestFailureCode
-	ParsingErrorCode
-	FileIOErrorCode
-	CommandErrorCode
+	"github.com/gitmobkab/balafetch/internal/exit_codes"
 )
 
 /*
@@ -43,9 +35,9 @@ Note: permission denied is the only error balafetch might get for this
 for each exit code, the exact error that trigerred returned for context
 except 0 exit code
 
+see internal/exit_codes/exit_codes.go for more details
 */
 func RunBalafetch() (int, error){
-
 	global_picker := random.NewPicker(time.Now().Unix())
 
 	var CategoryTitle string = global_picker.PickRandomBalatroCardCategory()
@@ -61,12 +53,12 @@ func RunBalafetch() (int, error){
 
 	ResponseData, RequestErr := api.GetFromBalatroApi(ImagesListParams)
 	if RequestErr != nil {
-		return RequestFailureCode, RequestErr
+		return exitCodes.RequestFailureCode, RequestErr
 	}
 
 	var imagesList model.ImagesListResponse
 	if err := json.Unmarshal(ResponseData, &imagesList); err != nil {
-		return ParsingErrorCode, err
+		return exitCodes.ApiResponseParsingFailureCode, err
 	}
 
 	imageTitle := imageutil.GetRandomImageTitle(imagesList)
@@ -81,42 +73,42 @@ func RunBalafetch() (int, error){
 	
 	ImageData, RequestErr := api.GetFromBalatroApi(ImageInfoParams)
 	if RequestErr != nil {
-		return RequestFailureCode, RequestErr
+		return exitCodes.RequestFailureCode, RequestErr
 	}
 
 	var imageInfo model.ImageInfoResponse
 	if err := json.Unmarshal(ImageData, &imageInfo); err != nil{
-		return ParsingErrorCode, err
+		return exitCodes.ApiResponseParsingFailureCode, err
 	}
 
 	image_url := imageutil.GetImageUrl(imageInfo)
 	image_data, err := api.GetRequest(image_url)
 	if err != nil {
-		return ParsingErrorCode, err
+		return exitCodes.ApiResponseParsingFailureCode, err
 	}
 
 	f, err := os.CreateTemp("","balatro-*.png")
 	
 	if err != nil {
-		return FileIOErrorCode, err
+		return exitCodes.FileIOErrorCode, err
 	}
 
 	
 
 	if _, err := f.Write(image_data); err != nil {
-		return FileIOErrorCode, err
+		return exitCodes.FileIOErrorCode, err
 	}
 	if err := f.Close(); err != nil {
-		return FileIOErrorCode, err
+		return exitCodes.FileIOErrorCode, err
 	}
 
 	defer os.Remove(f.Name())
 	
 	
 	if err := RunFastfetch(f.Name()); err != nil {
-		return CommandErrorCode, err
+		return exitCodes.CommandErrorCode, err
 	}
 
-	return SuccessCode, nil
+	return exitCodes.SuccessCode, nil
 }
 
