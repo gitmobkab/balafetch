@@ -2,65 +2,34 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"os"
-	"path"
 	"github.com/gitmobkab/balafetch/internal/run"
+	"github.com/gitmobkab/balafetch/internal/exit_codes"
 )
 
-func SetupLogFile() (string, error){
-
-	const BalafetchDirName string = "balafetch" 
-	const BalafetchLogFileName string = "balafetch.log"
-
-	UserHomeDir, UserHomeDirErr := os.UserHomeDir()
-	if UserHomeDirErr != nil {
-		fmt.Println(UserHomeDirErr)
-		return "", fmt.Errorf("Failed to get User Home Directory: %w", UserHomeDirErr)
-	}
-
-	BalafetchDirPath := path.Join(UserHomeDir, BalafetchDirName)
-	MkdirErr := os.MkdirAll(BalafetchDirPath, 0744) 
-	// ok, it's weird or maybe i don't get it
-	// but in order for us to open/create the log file,
-	// the user must explicitely possess the rwx rights
-	// so we don't make a dir with rw- permission
-	// but rather rwx
-	if MkdirErr != nil {
-		return "", fmt.Errorf("Failed to make Balafetch Dir: %w", MkdirErr)
-	}
-
-	logFilePath := path.Join(BalafetchDirPath, BalafetchLogFileName)
-	return logFilePath, nil
-}
 
 func main(){
-	const LogFileSetupFailureCode int = 50
-
-	logFilePath, logFileSetupErr := SetupLogFile()
-	if logFileSetupErr != nil{
-		fmt.Println("Balafetch setup failed\n",logFileSetupErr)
-		os.Exit(LogFileSetupFailureCode)
-	}
-	
-	logFile, OpenFileErr := os.OpenFile(logFilePath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
-	if OpenFileErr != nil{
-		fmt.Println("Unable to open log file:", OpenFileErr)
-		os.Exit(LogFileSetupFailureCode)
+	var flags = map[string]func() int{
+		"-v": Version,
+		"-h": Help,
 	}
 
-	log.SetOutput(logFile)
-	
-	balafetchRunExitCode, balafetchRunErr := run.RunBalafetch()
-	switch {
-	case balafetchRunExitCode != run.SuccessCode && balafetchRunExitCode != run.CommandErrorCode:
-		run.RunFastfetchDefault()
-		log.Printf("[ Error Code: %d ]\n",balafetchRunExitCode)
-		log.Println(balafetchRunErr)
-	case balafetchRunExitCode == run.CommandErrorCode:
-		fmt.Println("Fastfetch not installed in your system")
-	}
+	cmdArgs := os.Args[1:]
+	var exitCode int = 0
 
-	logFile.Close()
-	os.Exit(balafetchRunExitCode)
+	if len(cmdArgs) == 0 {
+		exitCode = run.FullBalafetchRun()
+	} else if len(cmdArgs) > 1 {
+		fmt.Println("Too many arguments provided. Use -h for help.")
+		fmt.Println("Usage: balafetch [-h | -v]")
+		exitCode = exitCodes.InvalidUsageFailureCode
+	} else {
+		if action, exists := flags[cmdArgs[0]]; exists {
+			exitCode = action()
+		} else {
+			fmt.Printf("Unknown argument: '%s'. Use -h for help.\n", cmdArgs[0])	
+			exitCode = exitCodes.InvalidUsageFailureCode	
+		}
+	}
+	os.Exit(exitCode)
 }
