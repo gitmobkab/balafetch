@@ -14,7 +14,7 @@ You might refer to these if you plan to write a script with balafetch or when de
 | 2 | Unexpected API Response | Happens when the Balatro API responds to a request in a format that balafetch doesn't know how to handle | Failable |
 | 3 | File Related Failures | Happens when the OS refuses to grant balafetch file access. **This is different from Error 50 because it only triggers when balafetch tries to download a card image and can't access your temporary folder** | Failable |
 | 4 | Command Not Found | Happens when there's no command named 'fastfetch' in your system | Fatal |
-
+| 5 | Invalid Usage | Happens when balafetch is run with unsupported arguments (only `-h` and `-v` are supported) | Fatal |
 ## Fixes
 
 ### Code 50: Setup Failure
@@ -59,6 +59,10 @@ icacls %TEMP%
 
 ### Code 4: Command Not Found
 Install the **fastfetch** binary on your system/OS.
+
+### Code 5: Invalid Usage
+- Make sure to only use the supported arguments: `-h` for help and `-v` for version information
+- Do not use `--help` or `--version` as they are not supported
 
 **Installation options:**
 - Package manager (recommended): `apt install fastfetch`, `brew install fastfetch`, `winget install fastfetch`, etc.

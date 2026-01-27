@@ -78,7 +78,7 @@ curl -O -L https://github.com/gitmobkab/balafetch/releases/download/{version}/ba
 ```
 
 Replace the following placeholders:
-- `{version}` - The version you want (e.g., `v0.2.0`)
+- `{version}` - The version you want (e.g., `v0.3.0`)
 - `{os}` - Your operating system (`linux`, `darwin` for macOS, `windows`, `freebsd`)
 - `{arch}` - Your CPU architecture (`amd64`, `arm64`, `arm`)
 
@@ -101,6 +101,15 @@ curl -O -L https://github.com/gitmobkab/balafetch/releases/download/{version}/ba
 - `freebsd/amd64`
 - `freebsd/arm64`
 - `freebsd/arm`
+
+**Versioning:**
+You can find the latest version number on the [balafetch GitHub Releases](https://github.com/gitmobkab/balafetch/releases) page.
+
+Currently, the latest version is `v0.3.0`.
+
+**Release Page:**
+You can also visit the [balafetch releases page](https://github.com/gitmobkab/balafetch/releases) to manually download the binary for your platform.
+
 
 #### 2. Install the binary
 
@@ -164,8 +173,15 @@ mv balafetch ~/.local/bin/
 
 Simply run:
 ```bash
-balafetch
+balafetch [-h | -v]
 ```
+Options:
+- `-h` : Show help message and exit
+- `-v` : Show version information and exit
+
+>[!IMPORTANT]
+> balafetch doesn't take any arguments other than `-h` and `-v`.
+> `--help` and `--version` are not supported.
 
 That's it! Each time you run it, you'll get a random Balatro card as your fastfetch logo.
 
@@ -202,6 +218,7 @@ balafetch has intelligent fallback behavior to ensure you always get *some* outp
 - Permission errors
 - Command not found (fastfetch not installed)
 - Logging setup failures
+- Invalid usage (unsupported arguments) [since v0.3.0]
 
 **Fallible Errors** (yellow boxes) - Recovered by falling back to default fastfetch:
 - Failed to request images from API
