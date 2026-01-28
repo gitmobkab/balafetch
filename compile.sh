@@ -54,10 +54,13 @@ PLATFORMS=(
     "freebsd/arm"
 )
 TARGET_FOLDER="dist"
+CHECKSUMS_FILE="$TARGET_FOLDER/checksums.txt"
 COMPILE_PATH_TARGET="$1"
 
 InfoLog "Creating $TARGET_FOLDER Folder"
 mkdir -p $TARGET_FOLDER
+InfoLog "Cleaning $CHECKSUMS_FILE"
+echo $(date) > $CHECKSUMS_FILE
 
 
 declare -i current=1
@@ -77,7 +80,11 @@ for platform in ${PLATFORMS[@]}; do
     InfoLog "Compiling $output_file from $COMPILE_PATH_TARGET"
     go build -o $TARGET_FOLDER/$output_file $COMPILE_PATH_TARGET
     SuccessLog "Compiling Done ($current/${#PLATFORMS[@]})"
+    current_checksum=$(sha256sum -b $TARGET_FOLDER/$output_file)
+    InfoLog "$current_checksum\n________________"
+    echo "$current_checksum" >> $CHECKSUMS_FILE
     current+=1
 done
 
 SuccessLog "Compilation to all platforms successful"
+SuccessLog "All checksums have been written, check $CHECKSUMS_FILE"
