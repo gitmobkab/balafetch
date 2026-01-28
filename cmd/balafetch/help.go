@@ -10,6 +10,6 @@ func Help() int{
 	fmt.Println("Usage: balafetch [-h | -v]")
 	fmt.Println("Options:")
 	fmt.Println("  -h      Show help information")
-	fmt.Println("  -v 	   Show version information")
+	fmt.Println("  -v 	  Show version information")
 	return exitCodes.SuccessCode
 }
