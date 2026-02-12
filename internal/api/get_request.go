@@ -7,10 +7,10 @@ import (
 	"time"
 )
 
-func GetRequest(url string) ([]byte, error) {
+func GetRequest(url string, request_timeout int) ([]byte, error) {
 
 	client := http.Client{
-		Timeout: 20 * time.Second,
+		Timeout: time.Duration(request_timeout) * time.Second,
 	}
 
 	resp, err := client.Get(url)
@@ -18,13 +18,13 @@ func GetRequest(url string) ([]byte, error) {
 		return nil, err
 	}
 	
+	if resp.StatusCode < 200 || resp.StatusCode > 299 {
+		return nil, fmt.Errorf("unexpected response status code: %d", resp.StatusCode)
+	}
+	
 	body, err := io.ReadAll(resp.Body) 
 	resp.Body.Close()
-
-	if resp.StatusCode < 200 && resp.StatusCode > 299 {
-		return nil, fmt.Errorf("unexpected response status code: %d with data: %s", resp.StatusCode, body)
-	}
-
+	
 	if err != nil {
 		return nil, err
 

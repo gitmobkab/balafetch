@@ -9,7 +9,7 @@ import (
 )
 
 
-func FullBalafetchRun() (int){
+func FullBalafetchRun(timeout int) (int){
 	logFilePath, logFileSetupErr := logfilehelpers.SetupLogFile()
 	if logFileSetupErr != nil{
 		fmt.Println("Balafetch setup failed\n",logFileSetupErr)
@@ -24,7 +24,7 @@ func FullBalafetchRun() (int){
 
 	log.SetOutput(logFile)
 	
-	balafetchRunExitCode, balafetchRunErr := RunBalafetch()
+	balafetchRunExitCode, balafetchRunErr := RunBalafetch(timeout)
 	switch {
 	case balafetchRunExitCode != exitCodes.SuccessCode && balafetchRunExitCode != exitCodes.CommandErrorCode:
 		RunFastfetchDefault()

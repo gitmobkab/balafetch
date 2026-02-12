@@ -37,7 +37,7 @@ except 0 exit code
 
 see internal/exit_codes/exit_codes.go for more details
 */
-func RunBalafetch() (int, error){
+func RunBalafetch(timeout int) (int, error){
 	global_picker := random.NewPicker(time.Now().Unix())
 
 	var CategoryTitle string = global_picker.PickRandomBalatroCardCategory()
@@ -51,7 +51,7 @@ func RunBalafetch() (int, error){
 	}
 	
 
-	ResponseData, RequestErr := api.GetFromBalatroApi(ImagesListParams)
+	ResponseData, RequestErr := api.GetFromBalatroApi(ImagesListParams,timeout)
 	if RequestErr != nil {
 		return exitCodes.RequestFailureCode, RequestErr
 	}
@@ -71,7 +71,7 @@ func RunBalafetch() (int, error){
 		"format":"json",
 	}
 	
-	ImageData, RequestErr := api.GetFromBalatroApi(ImageInfoParams)
+	ImageData, RequestErr := api.GetFromBalatroApi(ImageInfoParams, timeout)
 	if RequestErr != nil {
 		return exitCodes.RequestFailureCode, RequestErr
 	}
@@ -82,7 +82,7 @@ func RunBalafetch() (int, error){
 	}
 
 	image_url := imageutil.GetImageUrl(imageInfo)
-	image_data, err := api.GetRequest(image_url)
+	image_data, err := api.GetRequest(image_url, timeout)
 	if err != nil {
 		return exitCodes.ApiResponseParsingFailureCode, err
 	}
