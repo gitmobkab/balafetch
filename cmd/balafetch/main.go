@@ -1,35 +1,29 @@
 package main
 
 import (
-	"fmt"
 	"os"
 	"github.com/gitmobkab/balafetch/internal/run"
 	"github.com/gitmobkab/balafetch/internal/exit_codes"
+	pflag "github.com/spf13/pflag"
 )
 
 
 func main(){
-	var flags = map[string]func() int{
-		"-v": Version,
-		"-h": Help,
-	}
+	helpFlag := pflag.BoolP("help", "h", false, "Show help information")
+	versionFlag := pflag.BoolP("version", "v", false, "Show version information")
+	timeoutFlag := pflag.IntP("timeout", "t", 20, "Set the timeout for API requests in seconds")
 
-	cmdArgs := os.Args[1:]
-	var exitCode int = 0
+	pflag.Parse()
 
-	if len(cmdArgs) == 0 {
-		exitCode = run.FullBalafetchRun()
-	} else if len(cmdArgs) > 1 {
-		fmt.Println("Too many arguments provided. Use -h for help.")
-		fmt.Println("Usage: balafetch [-h | -v]")
-		exitCode = exitCodes.InvalidUsageFailureCode
+	var exitCode int = exitCodes.SuccessCode
+
+	if *helpFlag {
+		Help()
+	} else if *versionFlag {
+		Version()
 	} else {
-		if action, exists := flags[cmdArgs[0]]; exists {
-			exitCode = action()
-		} else {
-			fmt.Printf("Unknown argument: '%s'. Use -h for help.\n", cmdArgs[0])	
-			exitCode = exitCodes.InvalidUsageFailureCode	
-		}
+		exitCode = run.FullBalafetchRun(*timeoutFlag)
 	}
+
 	os.Exit(exitCode)
 }
