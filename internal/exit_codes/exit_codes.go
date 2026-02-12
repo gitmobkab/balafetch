@@ -3,9 +3,8 @@ package exitCodes
 const (
 	SuccessCode = 0;
 	RequestFailureCode int = 1;
-	ApiResponseParsingFailureCode int = 2;
-	FileIOErrorCode int = 3;
-	CommandErrorCode int = 4;
-	InvalidUsageFailureCode int = 5
+	CommandErrorCode int = 2;
+	ApiResponseParsingFailureCode int = 3;
+	FileIOErrorCode int = 4;
 	LogFileSetupFailureCode int = 50;
 )

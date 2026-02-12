@@ -1,5 +1,9 @@
 # balafetch
 
+![GitHub release](https://img.shields.io/github/v/release/gitmobkab/balafetch)
+![License](https://img.shields.io/badge/license-MIT-green)
+
+
 ![preview](imgs/preview.gif "preview gif")
 
 <table>
@@ -78,9 +82,12 @@ curl -O -L https://github.com/gitmobkab/balafetch/releases/download/{version}/ba
 ```
 
 Replace the following placeholders:
-- `{version}` - The version you want (e.g., `v0.3.0`)
+- `{version}` - The version you want (e.g., `v0.4.0`, `V0.3.0`, etc.)
 - `{os}` - Your operating system (`linux`, `darwin` for macOS, `windows`, `freebsd`)
 - `{arch}` - Your CPU architecture (`amd64`, `arm64`, `arm`)
+
+> [!IMPORTANT]
+> For whatever reason, balafetch use capital `V` rather than `v` for versioning, so make sure to use `{version}` with a capital V when downloading. (e.g., `V0.4.0` instead of `v0.4.0`)
 
 > [!NOTE]
 > On Windows, you must add `.exe` to the filename
@@ -105,10 +112,29 @@ curl -O -L https://github.com/gitmobkab/balafetch/releases/download/{version}/ba
 **Versioning:**
 You can find the latest version number on the [balafetch GitHub Releases](https://github.com/gitmobkab/balafetch/releases) page.
 
-Currently, the latest version is `v0.3.0`.
+you can see the latest release version in the badge at the top of this README as well.
+[See the CHANGELOG for details on what's new in each version.](CHANGELOG.md)
 
 **Release Page:**
 You can also visit the [balafetch releases page](https://github.com/gitmobkab/balafetch/releases) to manually download the binary for your platform.
+
+#### 2. Verify the binary (optional but recommended)
+To ensure the integrity of the downloaded binary, you can verify its SHA256 checksum against the value provided in the release notes.
+
+**Get the expected checksum from the release notes**
+
+see the release notes for the version you downloaded, and find the SHA256 checksum for your specific OS/architecture binary. ( available in the "Assets" section of the release and since v0.4.0)
+
+```bash
+# Example: expected checksum for Linux AMD64 binary in v0.4.0
+bccd4f65...07b *dist/balafetch-linux-amd64
+
+# Compute the checksum of the downloaded file
+sha256sum balafetch-{os}-{arch}
+
+# Compare the computed checksum with the expected value
+# If they match, the file is valid. If not, do not use the file and try downloading again.
+```
 
 
 #### 2. Install the binary
@@ -117,6 +143,7 @@ You can also visit the [balafetch releases page](https://github.com/gitmobkab/ba
 ```bash
 # Make the binary executable
 chmod +x balafetch-{os}-{arch}
+
 
 # Move to a directory in your PATH for system-wide installation
 sudo mv balafetch-{os}-{arch} /usr/local/bin/balafetch
@@ -170,20 +197,18 @@ mv balafetch ~/.local/bin/
 ```
 
 ## Usage
+**Balafetch - The stupid balatro flavoured fastfetch wrapper**
 
-Simply run:
-```bash
-balafetch [-h | -v]
-```
+**Usage: balafetch [options]**
+
 Options:
-- `-h` : Show help message and exit
-- `-v` : Show version information and exit
 
->[!IMPORTANT]
-> balafetch doesn't take any arguments other than `-h` and `-v`.
-> `--help` and `--version` are not supported.
+  `-h`, `--help`          Show help information
 
-That's it! Each time you run it, you'll get a random Balatro card as your fastfetch logo.
+  `-t`, `--timeout` int   Set the timeout for API requests in seconds (default 20)
+
+  -`-v`, `--version`       Show version information
+
 
 ## How It Works
 
