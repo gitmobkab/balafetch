@@ -9,6 +9,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.0] - 2026-XX-XX
+
+
+### Changed
+- Updated `balafetch --version` output to include build time and commit hash information, in addition to the version number.
+- Updated optional 'card_category' argument to support case-insensitive matching and added error handling for invalid categories, providing a user-friendly message listing valid categories.
+
+### Removed
+- Go-figure dependency for version output (replaced with simple formatted text output)
+
 
 ## [0.4.0] - 2026-02-12
 
