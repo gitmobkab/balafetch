@@ -1,7 +1,10 @@
 <h1 align="center">balafetch</h1>
 
 <p align="center">
-  <img src="imgs/balafetch.png" alt="balafetch logo" width="600">
+  <img align="center" src="imgs/balafetch.png" alt="balafetch logo" width="600">
+</p>
+
+<p align="center">
   *the cards in the logo are unofficial cards made for balafetch logo, not actual Balatro cards*
 </p>
 
