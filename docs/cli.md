@@ -6,9 +6,19 @@ This document serves as a comprehensive guide to using the Balafetch Command Lin
 > Heads up! The balafetch CLI V0.4.0 and above use a different set of exit codes that are not compatible with the previous versions. If you have scripts that rely on the old exit codes, make sure to update them according to the new exit codes listed in the [Balafetch Exit Codes documentation.](errors_codes.md)
 
 ## Usage
-To use the balafetch CLI, simply run the following command in your terminal:
 ```bash
-balafetch
+balafetch [OPTIONS] [CARD_CATEGORY]
+
+Options:
+  -h, --help          Show help information
+  -t, --timeout int   Set the timeout for API requests in seconds (default 20)
+  -v, --version       Show version information
+Card Categories:
+ - jokers
+ - tarot cards
+ - planet cards
+ - spectral cards
+ - vouchers
 ```
 ## Options
 The balafetch CLI supports the following options:
@@ -18,7 +28,18 @@ The balafetch CLI supports the following options:
     - Negative values are converted to their absolute value, so `-t -30` is the same as `-t 30`.
 
 ## Arguments
-The balafetch CLI does not require and support any additional arguments.
+card_category (optional): Specify a card category to fetch. If not provided, a random category will be selected. Valid categories include:
+- jokers
+- tarot cards
+- planet cards
+- spectral cards
+- vouchers
+
+note that the card category argument is case-insensitive, so you can use any combination of uppercase and lowercase letters (e.g., "Jokers", "jokers", "JOKERS" are all valid).
+
+unfortunately, the CLI does not support partial matching for card categories, so you need to provide the full category name. If an invalid category is provided, the CLI will display an error message along with a list of valid categories.
+
+i.e. `balafetch tarot` will not work, but `balafetch "tarot cards"` will work.
 
 ## Additional Information
 
