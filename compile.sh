@@ -34,8 +34,8 @@ function InfoLog {
 # i'm still not writing a main func tbh
 
 set -e
-if [ "$#" -ne 1 ]; then
-    echo "Usage: $0 <File/or/Folder/To/Compile>"
+if [ "$#" -ne 2 ]; then
+    echo "Usage: $0 <File/or/Folder/To/Compile> <VERSION>"
     echo "Note: include ./ if it's a folder"
     exit 1
 fi
@@ -56,12 +56,16 @@ PLATFORMS=(
 TARGET_FOLDER="dist"
 CHECKSUMS_FILE="$TARGET_FOLDER/checksums.txt"
 COMPILE_PATH_TARGET="$1"
+VERSION="$2"
+DATE_FORMAT="%Y-%m-%dT%TZ"
+DATA_MODULE_PATH="github.com/gitmobkab/balafetch/internal/data"
 
 InfoLog "Creating $TARGET_FOLDER Folder"
 mkdir -p $TARGET_FOLDER
 InfoLog "Cleaning $CHECKSUMS_FILE"
 echo $(date) > $CHECKSUMS_FILE
 
+InfoLog "\n=== Starting compilation of $COMPILE_PATH_TARGET with version $VERSION ===\n"
 
 declare -i current=1
 for platform in ${PLATFORMS[@]}; do
@@ -78,9 +82,16 @@ for platform in ${PLATFORMS[@]}; do
     fi
 
     InfoLog "Compiling $output_file from $COMPILE_PATH_TARGET"
-    go build -o $TARGET_FOLDER/$output_file $COMPILE_PATH_TARGET
+    go build -ldflags "\
+    -X $DATA_MODULE_PATH.Version=$VERSION\
+    -X $DATA_MODULE_PATH.CommitHash=$(git rev-parse --short HEAD)\
+    -X $DATA_MODULE_PATH.BuildTime=$(date -u +$DATE_FORMAT)"\
+    -o $TARGET_FOLDER/$output_file $COMPILE_PATH_TARGET
+
     SuccessLog "Compiling Done ($current/${#PLATFORMS[@]})"
+    
     current_checksum=$(sha256sum -b $TARGET_FOLDER/$output_file)
+
     InfoLog "$current_checksum\n________________"
     echo "$current_checksum" >> $CHECKSUMS_FILE
     current+=1
