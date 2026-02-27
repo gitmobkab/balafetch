@@ -21,4 +21,7 @@ type ImageInfoResponse struct {
 	} `json:"query"`
 }
 
-
+type Ctx struct {
+	CardCategory string
+	Timeout int
+}
