@@ -2,14 +2,17 @@ package run
 
 import (
 	"encoding/json"
+	"fmt"
 	"os"
 	"time"
 
 	"github.com/gitmobkab/balafetch/internal/api"
+	"github.com/gitmobkab/balafetch/internal/exit_codes"
 	"github.com/gitmobkab/balafetch/internal/imageutil"
 	"github.com/gitmobkab/balafetch/internal/model"
 	"github.com/gitmobkab/balafetch/internal/random"
-	"github.com/gitmobkab/balafetch/internal/exit_codes"
+	"github.com/gitmobkab/balafetch/internal/strings_helpers"
+	"github.com/gitmobkab/balafetch/internal/data"
 )
 
 /*
@@ -37,10 +40,28 @@ except 0 exit code
 
 see internal/exit_codes/exit_codes.go for more details
 */
-func RunBalafetch(timeout int) (int, error){
+func RunBalafetch(ctx model.Ctx) (int, error){
 	global_picker := random.NewPicker(time.Now().Unix())
 
-	var CategoryTitle string = global_picker.PickRandomBalatroCardCategory()
+	CategoryTitle := ctx.CardCategory
+	timeout := ctx.Timeout
+
+	if CategoryTitle != "" {
+		contained := strings_helpers.ContainsIgnoreCase(data.Cards_categories, CategoryTitle)
+		if !contained {
+			fmt.Printf("Card category '%s' is not a known card category\n", CategoryTitle)
+			fmt.Printf("\nAvailable categories:\n")
+			for _, category := range data.Cards_categories {
+				fmt.Printf(" - %s\n", category)
+			}
+
+			return exitCodes.CommandErrorCode, nil
+		}
+	} else {
+		CategoryTitle = global_picker.PickRandomBalatroCardCategory()
+	}
+
+	CategoryTitle = strings_helpers.TitleCase(CategoryTitle)
 	
 	ImagesListParams := map[string]string{
 		"action": "query",

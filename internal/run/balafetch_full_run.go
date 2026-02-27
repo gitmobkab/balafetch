@@ -6,10 +6,11 @@ import (
 	"os"
 	"github.com/gitmobkab/balafetch/internal/log_file_helpers"
 	"github.com/gitmobkab/balafetch/internal/exit_codes"
+	"github.com/gitmobkab/balafetch/internal/model"
 )
 
 
-func FullBalafetchRun(timeout int) (int){
+func FullBalafetchRun(ctx model.Ctx) (int){
 	logFilePath, logFileSetupErr := logfilehelpers.SetupLogFile()
 	if logFileSetupErr != nil{
 		fmt.Println("Balafetch setup failed\n",logFileSetupErr)
@@ -24,7 +25,7 @@ func FullBalafetchRun(timeout int) (int){
 
 	log.SetOutput(logFile)
 	
-	balafetchRunExitCode, balafetchRunErr := RunBalafetch(timeout)
+	balafetchRunExitCode, balafetchRunErr := RunBalafetch(ctx)
 	switch {
 	case balafetchRunExitCode != exitCodes.SuccessCode && balafetchRunExitCode != exitCodes.CommandErrorCode:
 		RunFastfetchDefault()
