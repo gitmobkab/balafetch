@@ -1,7 +1,18 @@
 package data
 
+import (
+	"runtime"
+)
 
-const VERSION string = "V0.4.0"
-const LICENSE string = "MIT"
-const OWNER string = "gitmobkab"
-const AppName string = "BalaFetch"
+const AppName string = "balafetch"
+
+const OS string = runtime.GOOS
+const ARCH string = runtime.GOARCH
+
+var Cards_categories = []string{
+	"jokers",
+	"tarot cards",
+	"planet cards",
+	"spectral cards",
+	"vouchers",
+}
