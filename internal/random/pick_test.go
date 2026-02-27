@@ -4,6 +4,7 @@ import (
 	"testing"
 	"github.com/gitmobkab/balafetch/internal/random"
 	"slices"
+	"github.com/gitmobkab/balafetch/internal/data"	
 )
 
 func TestPickIntDeterministic(tester *testing.T){
@@ -57,14 +58,12 @@ func TestPickRandomStringRange(tester *testing.T){
 
 func TestPickRandomBalatroCardCategoryDeterministic(tester *testing.T){
 	const SEED int64 = 7
-	const EXPECTED string = "Tarot Cards"
+	const EXPECTED string = "tarot cards"
 	picker := random.NewPicker(SEED)
 	result := picker.PickRandomBalatroCardCategory()
 	
-	validCategories := []string{"Jokers", "Tarot Cards", "Planet Cards", "Spectral Cards", "Vouchers"}
-	
 	if result != EXPECTED {
-		tester.Fatalf("Expected valid card category, got %s for SEED: %d\nValids: %#v", result, SEED, validCategories)
+		tester.Fatalf("Expected valid card category, got %s for SEED: %d\nValids: %#v", result, SEED, data.Cards_categories)
 	}
 }
 

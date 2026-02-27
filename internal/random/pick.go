@@ -2,6 +2,7 @@ package random
 
 import (
 	"math/rand"
+	"github.com/gitmobkab/balafetch/internal/data"
 )
 
 
@@ -27,13 +28,5 @@ func (picker *Picker) PickRandomString(strs []string) string {
 }
 
 func (picker *Picker) PickRandomBalatroCardCategory() string{
-	cards_categories := []string{
-		"Jokers",
-		"Tarot Cards",
-		"Planet Cards",
-		"Spectral Cards",
-		"Vouchers",
-	}
-
-	return picker.PickRandomString(cards_categories)
+	return picker.PickRandomString(data.Cards_categories)
 }
