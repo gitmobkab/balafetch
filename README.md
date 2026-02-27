@@ -92,10 +92,25 @@ so i decided to make it myself, and here we are.
 
 #### 1. Download the binary
 
-Download the balafetch binary for your OS and architecture:
+Download the latest version of balafetch for your OS and architecture:
+
+```bash
+curl -OL https://github.com/gitmobkab/balafetch/releases/latest/download/balafetch-{os}-{arch}
+```
+Or download a specific version of balafetch:
 
 ```bash
 curl -O -L https://github.com/gitmobkab/balafetch/releases/download/{version}/balafetch-{os}-{arch}
+```
+> [!NOTE]
+> On Windows, you must add `.exe` to the filename
+
+```bash
+# For balfetch V0.4.0 on Windows amd64 (64-bit)
+curl -O -L https://github.com/gitmobkab/balafetch/releases/download/V0.4.0/balafetch-windows-amd64.exe
+
+# or for the latest
+curl -OL https://github.com/gitmobkab/balafetch/releases/latest/download/balafetch-windows-amd64.exe
 ```
 
 Replace the following placeholders:
@@ -106,13 +121,6 @@ Replace the following placeholders:
 > [!IMPORTANT]
 > For whatever reason, balafetch use capital `V` rather than `v` for versioning, so make sure to use `{version}` with a capital V when downloading. (e.g., `V0.4.0` instead of `v0.4.0`)
 
-> [!NOTE]
-> On Windows, you must add `.exe` to the filename
-
-```bash
-# For Windows amd64 (64-bit)
-curl -O -L https://github.com/gitmobkab/balafetch/releases/download/{version}/balafetch-windows-amd64.exe
-```
 
 **Available OS/Architecture pairs:**
 - `windows/amd64`
