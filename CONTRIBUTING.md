@@ -1,6 +1,6 @@
 # Contributing to balafetch
 
-First off, thanks for taking the time to contribute! 🎴
+First off, thanks for taking the time to contribute! Whether it's a bug report, a feature suggestion, or a code contribution, your help is greatly appreciated. This document provides guidelines to help you contribute effectively to the balafetch project.
 
 The following is a set of guidelines for contributing to balafetch. These are mostly guidelines, not rules. Use your best judgment, and feel free to propose changes to this document in a pull request.
 
@@ -12,7 +12,6 @@ The following is a set of guidelines for contributing to balafetch. These are mo
   - [Suggesting Enhancements](#suggesting-enhancements)
   - [Your First Code Contribution](#your-first-code-contribution)
 - [Development Setup](#development-setup)
-- [Project Structure](#project-structure)
 - [Development Workflow](#development-workflow)
 - [Building the Project](#building-the-project)
 - [Testing](#testing)
@@ -31,7 +30,7 @@ Before creating bug reports, please check the existing issues to avoid duplicate
 
 - **Use a clear and descriptive title**
 - **Describe the exact steps to reproduce the problem**
-- **Provide specific examples** (commands you ran, error messages, logs from `~/balafetch/balafetch.log`)
+- **Provide specific examples** (commands you ran, error messages, logs from corresponding balafetch.log file of your OS)
 - **Describe the behavior you observed** and what you expected
 - **Include your environment details:**
   - OS and version
@@ -41,14 +40,14 @@ Before creating bug reports, please check the existing issues to avoid duplicate
 
 ### Suggesting Enhancements
 
-Enhancement suggestions are tracked as GitHub issues. When creating an enhancement suggestion, include:
+Enhancement suggestions are tracked as GitHub issues. When creating an enhancement suggestion:
 
 - **Use a clear and descriptive title**
 - **Provide a detailed description** of the suggested enhancement
 - **Explain why this enhancement would be useful** to most balafetch users
 - **List any alternative solutions** you've considered
 
-### Your First Code Contribution
+### Your First Code Contribution?
 
 Unsure where to begin? Look for issues labeled:
 - `good first issue` - Simple issues perfect for newcomers
@@ -79,45 +78,15 @@ Unsure where to begin? Look for issues labeled:
 
 4. **Install Go dependencies:**
    ```bash
-   go mod download
+   go mod tidy
    ```
 
-5. **Build and test:**
+5. **quickly test balafetch:**
    ```bash
-   go build ./cmd/balafetch/
+   go run ./cmd/balafetch/
    ./balafetch
    ```
 
-## Project Structure
-
-```
-.
-├── cmd/
-│   └── balafetch/
-│       └── main.go           # Entry point
-├── internal/
-│   ├── api/                  # Balatro fandom API client
-│   │   ├── balatro.go        # API functions
-│   │   ├── get_request.go    # HTTP request logic
-│   │   └── params.go         # API parameters
-│   ├── imageutil/            # Image download utilities
-│   │   └── imageutil.go
-│   ├── model/                # Data structures
-│   │   └── models.go
-│   ├── random/               # Random selection logic
-│   │   ├── pick.go
-│   │   └── pick_test.go
-│   └── run/                  # fastfetch execution
-│       ├── fastfetch.go
-│       └── run.go
-├── docs/                     # Documentation
-├── imgs/                     # Images for README
-├── dist/                     # Compiled binaries (generated)
-├── compile.sh               # Build script for all platforms
-├── go.mod                   # Go module definition
-├── LICENSE
-└── README.md
-```
 
 ### Package Descriptions
 
@@ -140,22 +109,15 @@ Unsure where to begin? Look for issues labeled:
 3. **Test your changes:**
    ```bash
    go test ./...
-   ./balafetch  # Test the actual program
+   go run ./cmd/balafetch  # Test the actual program
    ```
 
-4. **If you modified code, run the build script:**
-   ```bash
-   ./compile.sh
-   ```
-   > [!IMPORTANT]
-   > Since we don't have automated releases yet, you **must** run `compile.sh` after code changes to rebuild all platform binaries in `dist/`.
-
-5. **Update documentation if needed:**
+4. **Update documentation if needed:**
    - Update `README.md` for user-facing changes
    - Update `docs/errors_codes.md` if you added new exit codes
    - Update `docs/troubleshooting.md` if you added new error scenarios
 
-6. **Commit your changes:**
+5. **Commit your changes:**
    ```bash
    git add .
    git commit -m "feat: add awesome feature"
@@ -169,12 +131,14 @@ Unsure where to begin? Look for issues labeled:
    - `test:` - Adding tests
    - `chore:` - Maintenance tasks
 
-7. **Push to your fork:**
+6. **Push to your fork:**
    ```bash
    git push origin feature/your-feature-name
    ```
 
-8. **Open a Pull Request** on GitHub
+7. **Open a Pull Request** on GitHub
+
+
 
 ## Building the Project
 
@@ -182,25 +146,14 @@ Unsure where to begin? Look for issues labeled:
 
 For quick testing during development:
 ```bash
-go build ./cmd/balafetch/ -o balafetch
+go run ./cmd/balafetch/
 ```
 
-### Cross-Platform Build
+**DO NOT** use `go build` for development builds, as it does not include the necessary build-time information (version, commit hash, build time) that is included in the release builds.
 
-**Important:** Before submitting a PR with code changes, you must build for all platforms:
+**DO NOT** use `compile.sh` or push a commit on `dist/`
+as these are reserved for release builds only. Using them for development builds can lead to confusion and potential issues with versioning and distribution.
 
-```bash
-./compile.sh
-```
-
-This script builds balafetch for all supported platforms and places binaries in the `dist/` directory:
-- Linux (amd64, arm64, arm)
-- macOS/Darwin (amd64, arm64)
-- Windows (amd64, arm64)
-- FreeBSD (amd64, arm64, arm)
-
-> [!NOTE]
-> We don't have GitHub Actions for automated releases yet, so maintainers rely on `compile.sh` for building release binaries.
 
 ## Testing
 
@@ -217,66 +170,6 @@ go test -cover ./...
 go test ./internal/random/
 ```
 
-### Manual Testing
-
-After making changes, test the actual program:
-
-1. **Test successful execution:**
-   ```bash
-   ./balafetch
-   ```
-   Should display fastfetch with a random Balatro card.
-
-2. **Test error handling:**
-   - Disconnect from internet and run `./balafetch` (should fallback gracefully)
-   - Check logs at `~/balafetch/balafetch.log`
-
-3. **Test on your platform** (especially if modifying platform-specific code)
-
-### Adding Tests
-
-If you add new functions, especially in `internal/`:
-- Add corresponding test files (e.g., `myfunction_test.go`)
-- Aim for meaningful test coverage
-- Test edge cases and error conditions
-
-## Submitting Changes
-
-### Pull Request Process
-
-1. **Update documentation** - Make sure README, docs/, and code comments are up to date
-2. **Run compile.sh** - Ensure all platform binaries build successfully
-3. **Test thoroughly** - Run tests and manually test the program
-4. **Create a descriptive PR:**
-   - Clear title explaining what the PR does
-   - Description of changes made
-   - Reference any related issues
-   - Include before/after examples if applicable
-
-### PR Checklist
-
-Before submitting your PR, verify:
-
-- [ ] Code follows Go style guidelines
-- [ ] All tests pass (`go test ./...`)
-- [ ] `compile.sh` runs successfully (if code was modified)
-- [ ] Documentation is updated (README, docs/, code comments)
-- [ ] Commit messages follow conventional commit format
-- [ ] No unnecessary files are included (e.g., personal configs, temp files)
-
-## Style Guidelines
-
-### Go Code Style
-
-- Follow standard Go conventions and formatting
-- Run `go fmt` on all code:
-  ```bash
-  go fmt ./...
-  ```
-- Use meaningful variable and function names
-- Add comments for exported functions and complex logic
-- Keep functions focused and concise
-
 ### Error Handling
 
 - Always handle errors explicitly
@@ -290,13 +183,6 @@ If you need to add a new exit code:
 1. Update `docs/errors_codes.md` with the new code, type, reason, category, and fix
 2. Update error handling logic in the code
 3. Update `docs/troubleshooting.md` if the error needs special troubleshooting steps
-
-### Documentation Style
-
-- Use clear, concise language
-- Include code examples where helpful
-- Update all relevant documentation when making changes
-- Check for typos and grammatical errors
 
 ## Questions?
 

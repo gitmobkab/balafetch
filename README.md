@@ -1,8 +1,15 @@
-# balafetch
+<h1 align="center">balafetch</h1>
 
-![GitHub release](https://img.shields.io/github/v/release/gitmobkab/balafetch)
-![License](https://img.shields.io/badge/license-MIT-green)
+<p align="center">
+  <img src="imgs/balafetch.png" alt="balafetch logo" width="600">
+  *the cards in the logo are unofficial cards made for balafetch logo, not actual Balatro cards*
+</p>
 
+<p align="center">
+  <img src="https://img.shields.io/github/v/release/gitmobkab/balafetch" alt="GitHub release">
+  <img src="https://img.shields.io/badge/license-MIT-green" alt="License">
+  <img src="https://img.shields.io/badge/fastfetch%20required-yes-blue" alt="Requires fastfetch">
+</p>
 
 ![preview](imgs/preview.gif "preview gif")
 
@@ -49,7 +56,14 @@ balafetch is a lightweight wrapper for [fastfetch](https://github.com/fastfetch-
 
 ## Why should you use it?
 
-No idea, but this shit is my new fastfetch.
+Not long ago, i was looking at some rices on the hyprland discord server, and i came accross that beautiful balatro themed rice.
+
+![balatro rice](imgs/balatro_rice.jpeg)
+
+and i thought to myself, 
+> **"this rice would be perfect if it add a balatro card as the logo in fastfetch"** 
+
+so i decided to make it myself, and here we are.
 
 ## Features
 
@@ -199,7 +213,7 @@ mv balafetch ~/.local/bin/
 ## Usage
 **Balafetch - The stupid balatro flavoured fastfetch wrapper**
 
-**Usage: balafetch [options]**
+**Usage: balafetch [options] [card_category]**
 
 Options:
 
@@ -208,6 +222,8 @@ Options:
   `-t`, `--timeout` int   Set the timeout for API requests in seconds (default 20)
 
   -`-v`, `--version`       Show version information
+
+you can check the [CLI documentation](docs/cli.md) for more details on usage.
 
 
 ## How It Works
@@ -218,7 +234,13 @@ Options:
 When you run balafetch:
 
 1. **Logging relative setup** - Initializes logging configuration
-2. **Pick a card category** - Randomly selects from: `["Joker", "Spectral Card", "Vouchers", "Planet Card", "Tarot Card"]`
+2. **Pick a card category** - Randomly selects between: 
+    - jokers
+    - spectral cards
+    - vouchers
+    - planet cards
+    - "tarot cards
+
 3. **Request all images** - Fetches all images for the selected category from the Balatro fandom API
 4. **Pick a random card** - Selects one card at random from the fetched list
 5. **Download the image** - Downloads the card image to your temporary folder as `balatro-{randomHash}.png`
@@ -277,6 +299,8 @@ If you're building scripts around balafetch, you may want to handle different er
 ## Contributing
 
 Contributions are welcome! Feel free to open issues or submit pull requests.
+
+check the [contributing guidelines](CONTRIBUTING.md) for more details on contribution before submitting.
 
 ## License
 
