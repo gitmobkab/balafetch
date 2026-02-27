@@ -31,8 +31,6 @@ func FullBalafetchRun(ctx model.Ctx) (int){
 		RunFastfetchDefault()
 		log.Printf("[ Error Code: %d ]\n",balafetchRunExitCode)
 		log.Println(balafetchRunErr)
-	case balafetchRunExitCode == exitCodes.CommandErrorCode:
-		fmt.Println("Fastfetch not installed in your system")
 	}
 
 	logFile.Close()

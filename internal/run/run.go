@@ -127,7 +127,8 @@ func RunBalafetch(ctx model.Ctx) (int, error){
 	
 	
 	if err := RunFastfetch(f.Name()); err != nil {
-		return exitCodes.CommandErrorCode, err
+		fmt.Println("Error running fastfetch:", err)
+		return exitCodes.CommandErrorCode, nil
 	}
 
 	return exitCodes.SuccessCode, nil
