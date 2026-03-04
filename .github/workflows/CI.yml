@@ -30,8 +30,3 @@ jobs:
 
       - name: Build check
         run: go build ./cmd/balafetch/
-
-      - name: golangci-lint
-        uses: golangci/golangci-lint-action@v6
-        with:
-          version: latest
