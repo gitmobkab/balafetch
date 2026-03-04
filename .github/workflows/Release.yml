@@ -1,0 +1,70 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+      - "V*"
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Tag to release (e.g. V0.6.0)"
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Build and release
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+          cache: true
+
+      - name: Build all platforms
+        run: |
+          TAG="${{ github.ref_name }}"
+          VERSION="${TAG#v}"
+          VERSION="${VERSION#V}"
+          chmod +x compile.sh
+          ./compile.sh ./cmd/balafetch/ "$VERSION"
+
+      - name: Extract release notes from CHANGELOG.md
+        run: |
+          TAG="${{ github.ref_name }}"
+          VERSION="${TAG#v}"
+          VERSION="${VERSION#V}"
+
+          NOTES=$(awk \
+            "/^## \[${VERSION}\]/{found=1; next} found && /^## \[/{exit} found{print}" \
+            CHANGELOG.md)
+
+          if [ -z "$NOTES" ]; then
+            NOTES="No changelog entry found for ${VERSION}."
+          fi
+
+          # Append checksums that compile.sh already generated
+          echo "$NOTES" > release_notes.md
+          echo "" >> release_notes.md
+          echo "## SHA256 Checksums" >> release_notes.md
+          echo '```' >> release_notes.md
+          cat dist/checksums.txt >> release_notes.md
+          echo '```' >> release_notes.md
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: balafetch ${{ github.ref_name }}
+          body_path: release_notes.md
+          draft: false
+          prerelease: false
+          files: dist/**
