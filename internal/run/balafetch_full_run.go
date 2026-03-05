@@ -25,7 +25,7 @@ func FullBalafetchRun(ctx model.Ctx) (int){
 
 	log.SetOutput(logFile)
 	
-	balafetchRunExitCode, balafetchRunErr := RunBalafetch(ctx)
+	balafetchRunExitCode, balafetchRunErr := RunBalafetch(ctx, DefaultBalafetchDependencies())
 	switch {
 	case balafetchRunExitCode != exitCodes.SuccessCode && balafetchRunExitCode != exitCodes.CommandErrorCode:
 		RunFastfetchDefault()

@@ -15,32 +15,38 @@ import (
 	"github.com/gitmobkab/balafetch/internal/data"
 )
 
+
+/*
+BalafetchDependencies is a struct that holds the dependencies for the balafetch run.
+This allows for easier testing and separation of concerns.
+*/
+type BalafetchDependencies struct {
+	GetFromBalatroApi func(params map[string]string, timeout int) ([]byte, error)
+	GetImage func(url string, timeout int) ([]byte, error)
+	ExecFastfetch func(imagePath string) error
+}
+
+/*
+DefaultBalafetchDependencies returns the default dependencies for the balafetch run.
+This is used in the FullBalafetchRun function, but can be overridden for testing purposes.
+*/
+func DefaultBalafetchDependencies() BalafetchDependencies {
+	return BalafetchDependencies{
+		GetFromBalatroApi: api.GetFromBalatroApi,
+		GetImage: api.GetRequest,
+		ExecFastfetch: RunFastfetch,
+	}
+}
+
 /*
 run the balafetch script and return either (int,nil) or (int, error)
 
 the first returned value is the program exit code.
 the second returned value is either nil or the first error the funtion encounter
 
-the exit codes are
-
-0 -> success
-
-1 -> any network bound error, timeout, dns resolution failed, etc
-Note: a non 2xx response code from the api also count in this category
-
-2 -> failure to parse the api response as json
-
-3 -> File I/O bound error, unable to read/write to a file
-Note: permission denied is the only error balafetch might get for this
-
-4 -> Command not in user system
-
-for each exit code, the exact error that trigerred returned for context
-except 0 exit code
-
-see internal/exit_codes/exit_codes.go for more details
+the exit codes are defined in internal/exit_codes/exit_codes.go,
 */
-func RunBalafetch(ctx model.Ctx) (int, error){
+func RunBalafetch(ctx model.Ctx, Dependencies BalafetchDependencies) (int, error){
 	global_picker := random.NewPicker(time.Now().Unix())
 
 	CategoryTitle := ctx.CardCategory
@@ -72,7 +78,7 @@ func RunBalafetch(ctx model.Ctx) (int, error){
 		"format": "json",
 	}
 	
-	ResponseData, RequestErr := api.GetFromBalatroApi(ImagesListParams,timeout)
+	ResponseData, RequestErr := Dependencies.GetFromBalatroApi(ImagesListParams,timeout)
 	if RequestErr != nil {
 		return exitCodes.RequestFailureCode, RequestErr
 	}
@@ -92,7 +98,7 @@ func RunBalafetch(ctx model.Ctx) (int, error){
 		"format":"json",
 	}
 	
-	ImageData, RequestErr := api.GetFromBalatroApi(ImageInfoParams, timeout)
+	ImageData, RequestErr := Dependencies.GetFromBalatroApi(ImageInfoParams, timeout)
 	if RequestErr != nil {
 		return exitCodes.RequestFailureCode, RequestErr
 	}
@@ -103,7 +109,7 @@ func RunBalafetch(ctx model.Ctx) (int, error){
 	}
 
 	image_url := imageutil.GetImageUrl(imageInfo)
-	image_data, err := api.GetRequest(image_url, timeout)
+	image_data, err := Dependencies.GetImage(image_url, timeout)
 	if err != nil {
 		return exitCodes.ApiResponseParsingFailureCode, err
 	}
@@ -114,7 +120,6 @@ func RunBalafetch(ctx model.Ctx) (int, error){
 		return exitCodes.FileIOErrorCode, err
 	}
 
-	
 
 	if _, err := f.Write(image_data); err != nil {
 		return exitCodes.FileIOErrorCode, err
@@ -125,7 +130,7 @@ func RunBalafetch(ctx model.Ctx) (int, error){
 
 	defer os.Remove(f.Name())
 	
-	if err := RunFastfetch(f.Name()); err != nil {
+	if err := Dependencies.ExecFastfetch(f.Name()); err != nil {
 		fmt.Println("Error running fastfetch:", err)
 		return exitCodes.CommandErrorCode, nil
 	}
