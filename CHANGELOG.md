@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.6.1] - 2026-03-05
+
+### Fixed
+- Fixed a bug where balafetch would corrupt fastfetch output if any operations failed when using the inlineStreamer
+
 ## [0.6.0] - 2026-03-05
 
 ### Added
