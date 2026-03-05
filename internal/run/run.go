@@ -13,6 +13,7 @@ import (
 	"github.com/gitmobkab/balafetch/internal/random"
 	"github.com/gitmobkab/balafetch/internal/strings_helpers"
 	"github.com/gitmobkab/balafetch/internal/data"
+	"github.com/gitmobkab/balafetch/internal/ui"
 )
 
 
@@ -24,6 +25,7 @@ type BalafetchDependencies struct {
 	GetFromBalatroApi func(params map[string]string, timeout int) ([]byte, error)
 	GetImage func(url string, timeout int) ([]byte, error)
 	ExecFastfetch func(imagePath string) error
+	streamer func(string)
 }
 
 /*
@@ -35,6 +37,7 @@ func DefaultBalafetchDependencies() BalafetchDependencies {
 		GetFromBalatroApi: api.GetFromBalatroApi,
 		GetImage: api.GetRequest,
 		ExecFastfetch: RunFastfetch,
+		streamer: ui.NewInlineStreamer(),
 	}
 }
 
@@ -51,7 +54,6 @@ func RunBalafetch(ctx model.Ctx, Dependencies BalafetchDependencies) (int, error
 
 	CategoryTitle := ctx.CardCategory
 	timeout := ctx.Timeout
-	
 	
 	if CategoryTitle == "" {
 		CategoryTitle = global_picker.PickRandomBalatroCardCategory()
@@ -78,17 +80,24 @@ func RunBalafetch(ctx model.Ctx, Dependencies BalafetchDependencies) (int, error
 		"format": "json",
 	}
 	
+	Dependencies.streamer(fmt.Sprintf("Fetching all cards from '%s' category...", CategoryTitle))
 	ResponseData, RequestErr := Dependencies.GetFromBalatroApi(ImagesListParams,timeout)
 	if RequestErr != nil {
 		return exitCodes.RequestFailureCode, RequestErr
 	}
 
+	Dependencies.streamer("Parsing API response...")
 	var imagesList model.ImagesListResponse
 	if err := json.Unmarshal(ResponseData, &imagesList); err != nil {
 		return exitCodes.ApiResponseParsingFailureCode, err
 	}
 
-	imageTitle := imageutil.GetRandomImageTitle(imagesList)
+	Dependencies.streamer("Picking a random card...")
+	imageTitle , NoImageTitleErr := imageutil.GetRandomImageTitle(imagesList)
+
+	if NoImageTitleErr != nil {
+		return exitCodes.ApiResponseParsingFailureCode, NoImageTitleErr
+	}
 
 	ImageInfoParams := map[string]string{
 		"action":"query",
@@ -98,17 +107,24 @@ func RunBalafetch(ctx model.Ctx, Dependencies BalafetchDependencies) (int, error
 		"format":"json",
 	}
 	
+	Dependencies.streamer("Fetching the picked card info...")
 	ImageData, RequestErr := Dependencies.GetFromBalatroApi(ImageInfoParams, timeout)
 	if RequestErr != nil {
 		return exitCodes.RequestFailureCode, RequestErr
 	}
 
+	Dependencies.streamer("Parsing card info...")
 	var imageInfo model.ImageInfoResponse
 	if err := json.Unmarshal(ImageData, &imageInfo); err != nil{
 		return exitCodes.ApiResponseParsingFailureCode, err
 	}
 
-	image_url := imageutil.GetImageUrl(imageInfo)
+	Dependencies.streamer("Downloading the card image...")
+	image_url, NoImageInfoErr := imageutil.GetImageUrl(imageInfo)
+	if NoImageInfoErr != nil {
+		return exitCodes.ApiResponseParsingFailureCode, NoImageInfoErr
+	}
+
 	image_data, err := Dependencies.GetImage(image_url, timeout)
 	if err != nil {
 		return exitCodes.RequestFailureCode, err
@@ -130,6 +146,7 @@ func RunBalafetch(ctx model.Ctx, Dependencies BalafetchDependencies) (int, error
 
 	defer os.Remove(f.Name())
 	
+	Dependencies.streamer("")
 	if err := Dependencies.ExecFastfetch(f.Name()); err != nil {
 		fmt.Println("Error running fastfetch:", err)
 		return exitCodes.CommandErrorCode, nil
