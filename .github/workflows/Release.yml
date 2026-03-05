@@ -58,6 +58,9 @@ jobs:
           echo '```' >> release_notes.md
           cat dist/checksums.txt >> release_notes.md
           echo '```' >> release_notes.md
+          echo '' >> release_notes.md
+          echo '---' >> release_notes.md
+          echo '[Full changelog](https://github.com/gitmobkab/balafetch/blob/main/CHANGELOG.md)' >> release_notes.md
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
