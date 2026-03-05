@@ -9,6 +9,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.6.0] - 2026-03-05
+
+### Added
+- Alias support for card categories (e.g. `joker`, `tarots`, `tarot`, `planet`, `planets`, `spectral`, `spectrals`, `voucher`)
+- `--version-full` flag to display detailed build information (build time, commit hash)
+- Live single-line feedback during network operations
+
+### Changed
+- `--version` output shortened to `V{version} ({os}/{arch})`
+- Improved error message for invalid category — includes quote hint and available categories
+- Help output now displays aliases next to each canonical category
+
+### Fixed
+- Image download failure incorrectly returned wrong exit code
+
 ## [0.5.1] - 2026-27-02
 
 ### Fixed

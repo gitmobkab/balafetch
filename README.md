@@ -222,17 +222,21 @@ mv balafetch ~/.local/bin/
 ```
 
 ## Usage
-**Balafetch - The stupid balatro flavoured fastfetch wrapper**
-
-**Usage: balafetch [options] [card_category]**
-
+```bash
+balafetch - The stupid balatro flavoured fastfetch wrapper
+Usage: balafetch [OPTIONS] [CARD CATEGORY | ALIAS]
 Options:
-
-  `-h`, `--help`          Show help information
-
-  `-t`, `--timeout` int   Set the timeout for API requests in seconds (default 20)
-
-  -`-v`, `--version`       Show version information
+  -h, --help           Show help information
+  -t, --timeout int    Set the timeout for API requests in seconds (default 20)
+  -v, --version        Show version information
+      --version-full   Show detailed version information
+Available categories (aliases in parentheses):
+ - jokers (joker)
+ - tarot cards (tarot, tarots)
+ - planet cards (planet, planets)
+ - spectral cards (spectral, spectrals)
+ - vouchers (voucher)
+```
 
 you can check the [CLI documentation](docs/cli.md) for more details on usage.
 
