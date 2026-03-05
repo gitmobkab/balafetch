@@ -31,5 +31,5 @@ go.work.sum
 # .idea/
 .vscode/
 
-# balafetch windows compiled binaries
-!dist/balafetch-windows*.exe
+# No need to track it anymore, CI and CD handle that
+dist/
