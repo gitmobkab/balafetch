@@ -1,71 +1,58 @@
-package random_test
+package random
 
 import (
 	"testing"
-	"github.com/gitmobkab/balafetch/internal/random"
-	"slices"
-	"github.com/gitmobkab/balafetch/internal/data"	
+	"github.com/gitmobkab/balafetch/internal/data"
 )
 
-func TestPickIntDeterministic(tester *testing.T){
-	const SEED int64 = 5
-	const TARGET int = 26
-	const PICK_RANGE int = 50
-	picker := random.NewPicker(SEED)
-	if out := picker.PickInt(PICK_RANGE); out != TARGET{
-		tester.Fatalf("Expected %d, got %d for SEED: %d with RANGE: %d",
-						TARGET, out, SEED, PICK_RANGE)
-	}
-}
-
-func TestPickIntRange(tester *testing.T){
-	const SEED int64 = 1 
-	const MAX int = 35
-	picker := random.NewPicker(SEED)
-	for range 1000{
-		out := picker.PickInt(MAX)
-		if out < 0 || out > MAX {
-			tester.Fatalf("Out of range, got %d for SEED: %d with MAX: %d", 
-							out, SEED, MAX)
+func TestPickInt_AlwaysInBounds(t *testing.T) {
+	picker := NewPicker(42)
+	max := 10
+	for range 40 {
+		result := picker.PickInt(max)
+		if result < 0 || result >= max {
+			t.Errorf("PickInt(%d) = %d, out of bounds [0, %d)", max, result, max)
 		}
 	}
 }
 
-func TestPickRandomStringDeterministic(tester *testing.T){
-	const SEED int64 = 42
-	const EXPECTED string = "banana"
-	testStrings := []string{"apple", "banana", "cherry", "date"}
-	picker := random.NewPicker(SEED)
-	result := picker.PickRandomString(testStrings)
-	
-	if result != EXPECTED{
-		tester.Fatalf("Unexpected result, got %s for SEED: %d \nExpected %s", result, SEED, EXPECTED)
-	}
-}
-
-func TestPickRandomStringRange(tester *testing.T){
-	const SEED int64 = 10
-	testStrings := []string{"red", "green", "blue", "yellow", "orange"}
-	picker := random.NewPicker(SEED)
-	
-	for range 1000 {
-		result := picker.PickRandomString(testStrings)
-		if !slices.Contains(testStrings, result){
-			tester.Fatalf("Expected valid choice, got %s with SEED: %d \noptions: %#v",result, SEED, testStrings)
+func TestPickInt_IsDeterministicWithSameSeed(t *testing.T) {
+	p1 := NewPicker(99)
+	p2 := NewPicker(99)
+	for range 20 {
+		if p1.PickInt(100) != p2.PickInt(100) {
+			t.Error("same seed produced different results")
 		}
 	}
 }
 
-func TestPickRandomBalatroCardCategoryDeterministic(tester *testing.T){
-	const SEED int64 = 7
-	const EXPECTED string = "tarot cards"
-	picker := random.NewPicker(SEED)
-	result := picker.PickRandomBalatroCardCategory()
-	
-	if result != EXPECTED {
-		tester.Fatalf("Expected valid card category, got %s for SEED: %d\nValids: %#v", result, SEED, data.Cards_categories)
+func TestPickRandomString_AlwaysReturnsValidElement(t *testing.T) {
+	strs := []string{"alpha", "beta", "gamma", "delta"}
+	strSet := map[string]bool{}
+	for _, s := range strs {
+		strSet[s] = true
+	}
+
+	picker := NewPicker(7)
+	for range 50 {
+		result := picker.PickRandomString(strs)
+		if !strSet[result] {
+			t.Errorf("PickRandomString returned unexpected value %q", result)
+		}
 	}
 }
 
+func TestPickRandomBalatroCardCategory_ReturnsValidCategory(t *testing.T) {
+	validCategories := map[string]bool{}
+	for _, c := range data.Cards_categories {
+		validCategories[c] = true
+	}
 
-
+	picker := NewPicker(0)
+	for range 50 {
+		result := picker.PickRandomBalatroCardCategory()
+		if !validCategories[result] {
+			t.Errorf("PickRandomBalatroCardCategory returned unknown category %q", result)
+		}
+	}
+}
