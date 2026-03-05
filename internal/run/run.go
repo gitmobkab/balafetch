@@ -45,20 +45,21 @@ func RunBalafetch(ctx model.Ctx) (int, error){
 
 	CategoryTitle := ctx.CardCategory
 	timeout := ctx.Timeout
-
-	if CategoryTitle != "" {
-		contained := strings_helpers.ContainsIgnoreCase(data.Cards_categories, CategoryTitle)
-		if !contained {
-			fmt.Printf("Card category '%s' is not a known card category\n", CategoryTitle)
-			fmt.Printf("\nAvailable categories:\n")
-			for _, category := range data.Cards_categories {
-				fmt.Printf(" - %s\n", category)
-			}
-
-			return exitCodes.CommandErrorCode, nil
-		}
-	} else {
+	
+	
+	if CategoryTitle == "" {
 		CategoryTitle = global_picker.PickRandomBalatroCardCategory()
+	} else {
+		NormalizedCategory := strings_helpers.LowerCase(CategoryTitle)
+		GottenCategory, exists := data.CategoryResolution[NormalizedCategory]
+		if !exists {
+			fmt.Printf("balafetch could not resolve '%s' to a valid balatro card category\n", CategoryTitle)
+			fmt.Println("Note: use double quotes for categories with spaces, e.g. \"tarot cards\"")
+			data.DisplayCategoryHelp()
+			return exitCodes.CommandErrorCode, nil
+		} else {
+			CategoryTitle = GottenCategory
+		}
 	}
 
 	CategoryTitle = strings_helpers.TitleCase(CategoryTitle)
@@ -71,7 +72,6 @@ func RunBalafetch(ctx model.Ctx) (int, error){
 		"format": "json",
 	}
 	
-
 	ResponseData, RequestErr := api.GetFromBalatroApi(ImagesListParams,timeout)
 	if RequestErr != nil {
 		return exitCodes.RequestFailureCode, RequestErr
@@ -124,7 +124,6 @@ func RunBalafetch(ctx model.Ctx) (int, error){
 	}
 
 	defer os.Remove(f.Name())
-	
 	
 	if err := RunFastfetch(f.Name()); err != nil {
 		fmt.Println("Error running fastfetch:", err)
