@@ -9,7 +9,7 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/github/v/release/gitmobkab/balafetch" alt="GitHub release">
+  <img src="https://img.shields.io/github/v/tag/gitmobkab/balafetch" alt="GitHub release">
   <img src="https://img.shields.io/badge/license-MIT-green" alt="License">
   <img src="https://img.shields.io/badge/fastfetch%20required-yes-blue" alt="Requires fastfetch">
 </p>
