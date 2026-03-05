@@ -15,5 +15,9 @@ the format is:
 V<Version> (<OS>/<ARCH>) [<BuildTime>] *<CommitHash>
 */
 func GetVersion() string {
+	return fmt.Sprintf("V%s (%s/%s)", Version, OS, ARCH)
+}
+
+func GetDetailedVersion() string {
 	return fmt.Sprintf("V%s (%s/%s) [%s] *%s", Version, OS, ARCH, BuildTime, CommitHash)
 }
