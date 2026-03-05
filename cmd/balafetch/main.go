@@ -14,6 +14,7 @@ func main(){
 	
 	helpFlag := pflag.BoolP("help", "h", false, "Show help information")
 	versionFlag := pflag.BoolP("version", "v", false, "Show version information")
+	versionFullFlag := pflag.Bool("version-full", false, "Show detailed version information")
 	timeoutFlag := pflag.IntP("timeout", "t", 20, "Set the timeout for API requests in seconds")
 	pflag.Parse()
 
@@ -30,8 +31,8 @@ func main(){
 
 	if *helpFlag {
 		Help()
-	} else if *versionFlag {
-		Version()
+	} else if *versionFlag || *versionFullFlag {
+		Version(*versionFullFlag)
 	} else {
 		exitCode = run.FullBalafetchRun(app_ctx)
 	}
