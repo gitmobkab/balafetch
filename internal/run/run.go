@@ -50,6 +50,8 @@ the second returned value is either nil or the first error the funtion encounter
 the exit codes are defined in internal/exit_codes/exit_codes.go,
 */
 func RunBalafetch(ctx model.Ctx, Dependencies BalafetchDependencies) (int, error){
+	defer fmt.Println()
+	defer Dependencies.streamer("")
 	global_picker := random.NewPicker(time.Now().Unix())
 
 	CategoryTitle := ctx.CardCategory
@@ -147,6 +149,7 @@ func RunBalafetch(ctx model.Ctx, Dependencies BalafetchDependencies) (int, error
 	defer os.Remove(f.Name())
 	
 	Dependencies.streamer("")
+	fmt.Println()
 	if err := Dependencies.ExecFastfetch(f.Name()); err != nil {
 		fmt.Println("Error running fastfetch:", err)
 		return exitCodes.CommandErrorCode, nil
