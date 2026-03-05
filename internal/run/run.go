@@ -111,7 +111,7 @@ func RunBalafetch(ctx model.Ctx, Dependencies BalafetchDependencies) (int, error
 	image_url := imageutil.GetImageUrl(imageInfo)
 	image_data, err := Dependencies.GetImage(image_url, timeout)
 	if err != nil {
-		return exitCodes.ApiResponseParsingFailureCode, err
+		return exitCodes.RequestFailureCode, err
 	}
 
 	f, err := os.CreateTemp("","balatro-*.png")
