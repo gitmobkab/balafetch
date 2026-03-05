@@ -2,7 +2,8 @@ package api
 
 
 
-// is this a doc ?
+// GetFromBalatroApi takes a map of query parameters and a timeout value, constructs the full API URL, and performs a GET request to the Balatro API.
+// It returns the response data as a byte slice or an error if the request fails.
 func GetFromBalatroApi(params map[string]string, timeout int) ([]byte, error) {
 	const API string = "https://balatrogame.fandom.com/api.php" 
 	
