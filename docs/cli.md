@@ -52,9 +52,6 @@ ALIAS (optional): Specify an alias for a card category. Aliases are alternative 
 | spectral, spectrals | `spectral cards` |
 | voucher | `vouchers` |
 
-
-i.e. `balafetch tarot` will not work, but `balafetch "tarot cards"` will work.
-
 ## Additional Information
 
 - For flags that doesn't take any values, chaining is supported, so you can use `balafetch -hv` instead of `balafetch -h -v`.
