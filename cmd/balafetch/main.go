@@ -15,7 +15,7 @@ func main(){
 	helpFlag := pflag.BoolP("help", "h", false, "Show help information")
 	versionFlag := pflag.BoolP("version", "v", false, "Show version information")
 	versionFullFlag := pflag.Bool("version-full", false, "Show detailed version information")
-	timeoutFlag := pflag.IntP("timeout", "t", 20, "Set the timeout for API requests in seconds")
+	timeoutFlag := pflag.IntP("timeout", "t", 20, "Set the timeout for API requests in seconds, 0 for no timeout")
 	pflag.Parse()
 
 	var app_ctx model.Ctx

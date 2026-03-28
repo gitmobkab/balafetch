@@ -25,7 +25,7 @@ Available categories (aliases in parentheses):
 The balafetch CLI supports the following options:
 - `-h`, `--help`: Display help information about the CLI and its usage.
 - `-v`, `--version`: Display the current version of balafetch.
-- `-t <seconds>`, `--timeout <seconds>`: Set a custom timeout for the CLI operations (default is 20 seconds),
+- `-t <seconds>`, `--timeout <seconds>`: Set a custom timeout for the CLI operations, 0 for no timeout (default is 20 seconds),
     - Negative values are converted to their absolute value, so `-t -30` is the same as `-t 30`.
 
 ## Arguments 
