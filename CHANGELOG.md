@@ -9,6 +9,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.7.0] - 2026-03-28
+
+### Added
+- Live progress display during network operations showing elapsed time against timeout (e.g. `fetching... [1.4/20 seconds]`)
+- `-t 0` / `--timeout 0` restored to mean no timeout (infinite)
+- Negative timeout values are silently corrected to their absolute value for backward compatibility
+
+### Changed
+- `--timeout` help text updated to document 0 behavior
+
+### Improved
+- Minor performance improvement on network operations via shared HTTP client
 ## [0.6.1] - 2026-03-05
 
 ### Fixed
@@ -29,12 +41,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Image download failure incorrectly returned wrong exit code
 
-## [0.5.1] - 2026-27-02
+## [0.5.1] - 2026-02-27
 
 ### Fixed
 - Fixed bug where balafetch would print "fastfetch not installed" when `card_category` is provided but invalid, even if fastfetch is installed.
 
-## [0.5.0] - 2026-27-02
+## [0.5.0] - 2026-02-27
 
 ### Changed
 - Updated `balafetch --version` output to include build time and commit hash information, in addition to the version number.
