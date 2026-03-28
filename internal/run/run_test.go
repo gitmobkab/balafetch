@@ -51,7 +51,7 @@ func happyDeps() BalafetchDependencies {
 			}
 			return fakeImageInfoResponse("https://fake.url/card.png"), nil
 		},
-		GetImage: func(url string, timeout int) ([]byte, error) {
+		GetFunc: func(url string, timeout int) ([]byte, error) {
 			return []byte("fake image data"), nil
 		},
 		ExecFastfetch: func(logo string) error {
@@ -158,7 +158,7 @@ func TestRunBalafetch_InvalidJson_FirstCall_ParseError(t *testing.T) {
 
 func TestRunBalafetch_ImageDownloadFailure_RequestError(t *testing.T) {
 	deps := happyDeps()
-	deps.GetImage = func(url string, timeout int) ([]byte, error) {
+	deps.GetFunc = func(url string, timeout int) ([]byte, error) {
 		return nil, errors.New("image download failed")
 	}
 

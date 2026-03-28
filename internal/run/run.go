@@ -23,7 +23,7 @@ This allows for easier testing and separation of concerns.
 */
 type BalafetchDependencies struct {
 	GetFromBalatroApi func(params map[string]string, timeout int) ([]byte, error)
-	GetImage func(url string, timeout int) ([]byte, error)
+	GetFunc func(url string, timeout int) ([]byte, error)
 	ExecFastfetch func(imagePath string) error
 	streamer func(string)
 }
@@ -35,7 +35,7 @@ This is used in the FullBalafetchRun function, but can be overridden for testing
 func DefaultBalafetchDependencies() BalafetchDependencies {
 	return BalafetchDependencies{
 		GetFromBalatroApi: api.GetFromBalatroApi,
-		GetImage: api.GetRequest,
+		GetFunc: api.GetRequest,
 		ExecFastfetch: RunFastfetch,
 		streamer: ui.NewInlineStreamer(),
 	}
@@ -82,8 +82,8 @@ func RunBalafetch(ctx model.Ctx, Dependencies BalafetchDependencies) (int, error
 		"format": "json",
 	}
 	
-	Dependencies.streamer(fmt.Sprintf("Fetching all cards from '%s' category...", CategoryTitle))
-	ResponseData, RequestErr := Dependencies.GetFromBalatroApi(ImagesListParams,timeout)
+	label := fmt.Sprintf("Fetching all cards from '%s' category...", CategoryTitle)
+	ResponseData, RequestErr := PrettyGetFromBalafetchApi(label, ImagesListParams, timeout, Dependencies)
 	if RequestErr != nil {
 		return exitCodes.RequestFailureCode, RequestErr
 	}
@@ -109,8 +109,8 @@ func RunBalafetch(ctx model.Ctx, Dependencies BalafetchDependencies) (int, error
 		"format":"json",
 	}
 	
-	Dependencies.streamer("Fetching the picked card info...")
-	ImageData, RequestErr := Dependencies.GetFromBalatroApi(ImageInfoParams, timeout)
+	label = "Fetching the picked card info..."
+	ImageData, RequestErr := PrettyGetFromBalafetchApi(label, ImageInfoParams, timeout, Dependencies)
 	if RequestErr != nil {
 		return exitCodes.RequestFailureCode, RequestErr
 	}
@@ -121,17 +121,19 @@ func RunBalafetch(ctx model.Ctx, Dependencies BalafetchDependencies) (int, error
 		return exitCodes.ApiResponseParsingFailureCode, err
 	}
 
-	Dependencies.streamer("Downloading the card image...")
+	Dependencies.streamer("Extracting image info...")
 	image_url, NoImageInfoErr := imageutil.GetImageUrl(imageInfo)
 	if NoImageInfoErr != nil {
 		return exitCodes.ApiResponseParsingFailureCode, NoImageInfoErr
 	}
-
-	image_data, err := Dependencies.GetImage(image_url, timeout)
+	
+	label = "Downloading the card image..."
+	image_data, err := PrettyGetRequest(image_url, label, timeout, Dependencies)
 	if err != nil {
 		return exitCodes.RequestFailureCode, err
 	}
 
+	Dependencies.streamer("writing downloaded image to temp file...")
 	f, err := os.CreateTemp("","balatro-*.png")
 	
 	if err != nil {
@@ -158,3 +160,23 @@ func RunBalafetch(ctx model.Ctx, Dependencies BalafetchDependencies) (int, error
 	return exitCodes.SuccessCode, nil
 }
 
+func PrettyGetRequest(url string, label string, requestTimeout int, dependencies BalafetchDependencies) ([]byte, error){
+	done := make(chan struct{})
+	go ui.PrintTimeoutProgress(label, requestTimeout, dependencies.streamer, done)
+	body, err := dependencies.GetFunc(url, requestTimeout)
+	close(done)
+	return body, err
+}
+
+func PrettyGetFromBalafetchApi(
+	label string, 
+	params map[string]string, 
+	requestTimeout int, 
+	dependencies BalafetchDependencies) ([]byte, error) {
+
+	done := make(chan struct{})
+	go ui.PrintTimeoutProgress(label, requestTimeout, dependencies.streamer, done)
+	body, err := dependencies.GetFromBalatroApi(params, requestTimeout)
+	close(done)
+	return body, err
+}
