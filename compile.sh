@@ -63,7 +63,7 @@ DATA_MODULE_PATH="github.com/gitmobkab/balafetch/internal/data"
 InfoLog "Creating $TARGET_FOLDER Folder"
 mkdir -p $TARGET_FOLDER
 InfoLog "Cleaning $CHECKSUMS_FILE"
-echo $(date) > $CHECKSUMS_FILE
+> $CHECKSUMS_FILE
 
 InfoLog "\n=== Starting compilation of $COMPILE_PATH_TARGET with version $VERSION ===\n"
 
@@ -90,7 +90,7 @@ for platform in ${PLATFORMS[@]}; do
 
     SuccessLog "Compiling Done ($current/${#PLATFORMS[@]})"
     
-    current_checksum=$(sha256sum -b $TARGET_FOLDER/$output_file)
+    current_checksum=$(cd $TARGET_FOLDER && sha256sum $output_file)
 
     InfoLog "$current_checksum\n________________"
     echo "$current_checksum" >> $CHECKSUMS_FILE
