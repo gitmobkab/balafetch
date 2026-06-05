@@ -9,6 +9,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.8.0] - 2026-06-05
+
+### Added
+- `--update` / `-u` flag for self-updating to the latest release from GitHub
+  - Downloads and verifies binary integrity via SHA256 checksums
+  - Atomic binary replacement (safe on Windows, Linux, macOS, FreeBSD)
+  - Cross-platform support: automatically detects and fetches the right binary for your OS/architecture
+  - Returns exit code 5 on update failure; exit code 0 if already up-to-date
+- `compile.bat`: Windows batch script for building binaries on Windows (equivalent to `compile.sh`)
+  - Cross-platform builds for all supported OS/architecture combinations
+  - SHA256 checksum generation via built-in `certutil` (no extra dependencies)
+
+### Changed
+- Release build process now generates checksums in `sha256sum` text-mode format (two spaces) for better tool compatibility
+- `compile.sh`: removed `-b` flag from `sha256sum` to produce text-mode checksums
+
+### Fixed
+- Fixed checksum file format to be compatible with `go-selfupdate` validator (two-space separator instead of asterisk)
+
 ## [0.7.0] - 2026-03-28
 
 ### Added
