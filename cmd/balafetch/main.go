@@ -1,10 +1,12 @@
 package main
 
 import (
+	"fmt"
 	"os"
-	"github.com/gitmobkab/balafetch/internal/run"
 	"github.com/gitmobkab/balafetch/internal/exit_codes"
 	"github.com/gitmobkab/balafetch/internal/model"
+	"github.com/gitmobkab/balafetch/internal/run"
+	"github.com/gitmobkab/balafetch/internal/updater"
 	pflag "github.com/spf13/pflag"
 )
 
@@ -16,6 +18,7 @@ func main(){
 	versionFlag := pflag.BoolP("version", "v", false, "Show version information")
 	versionFullFlag := pflag.Bool("version-full", false, "Show detailed version information")
 	timeoutFlag := pflag.IntP("timeout", "t", 20, "Set the timeout for API requests in seconds, 0 for no timeout")
+	updateFlag := pflag.BoolP("update", "u", false, "Update balafetch to the latest version")
 	pflag.Parse()
 
 	var app_ctx model.Ctx
@@ -33,6 +36,11 @@ func main(){
 		Help()
 	} else if *versionFlag || *versionFullFlag {
 		Version(*versionFullFlag)
+	} else if *updateFlag {
+		if err := updater.Update(app_ctx.Timeout); err != nil {
+			fmt.Println(err)
+			exitCode = exitCodes.UpdateFailureCode
+		}
 	} else {
 		exitCode = run.FullBalafetchRun(app_ctx)
 	}

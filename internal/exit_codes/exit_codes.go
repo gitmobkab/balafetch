@@ -19,7 +19,10 @@ const (
 	// Note: permission denied is the only error balafetch might get for this
 	FileIOErrorCode int = 4;
 
-	// LogFileSetupFailureCode is the exit code for any error related to the setup of the log file, 
+	// LogFileSetupFailureCode is the exit code for any error related to the setup of the log file,
 	// such as unable to create or open the log file
 	LogFileSetupFailureCode int = 50;
+
+	// UpdateFailureCode is the exit code for any error during the self-update process
+	UpdateFailureCode int = 5;
 )
