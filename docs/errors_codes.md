@@ -1,6 +1,6 @@
 # Balafetch Exit Codes
 
-To this day, balafetch registers 6 exit codes.
+To this day, balafetch registers 7 exit codes.
 
 You might refer to these if you plan to write a script with balafetch or when debugging balafetch.
 
@@ -17,6 +17,7 @@ You might refer to these if you plan to write a script with balafetch or when de
 | 2 | Command Not Found, Invalid Usage | Happens when there's no command named 'fastfetch' in your system | Fatal |
 | 3 | Unexpected API Response | Happens when the Balatro API responds to a request in a format that balafetch doesn't know how to handle | Failable |
 | 4 | File Related Failures | Happens when the OS refuses to grant balafetch file access. **This is different from Error 50 because it only triggers when balafetch tries to download a card image and can't access your temporary folder** | Failable |
+| 5 | Update Failure | Happens when the `--update` flag fails to download, verify, or install a new version of balafetch from GitHub | Failable |
 
 ## Fixes
 
@@ -66,6 +67,15 @@ ls -ld /tmp
 # Check %TEMP% permissions
 icacls %TEMP%
 ```
+
+### Code 5: Update Failure
+- Check your internet connection and try again
+- Verify you have write permissions to the balafetch binary location
+  - Linux/macOS: typically `/usr/local/bin/balafetch` or `~/.local/bin/balafetch`
+  - Windows: typically `C:\Windows\System32\balafetch.exe` or your custom installation path
+- Ensure you're running a version with the `--update` feature (`V0.8.0` or later)
+- Check balafetch logs in `~/balafetch/balafetch.log` for detailed error information
+- If the issue persists, open an issue on the [official balafetch repository](https://github.com/gitmobkab/balafetch/issues) with your logs
 
 
 **Installation options:**
