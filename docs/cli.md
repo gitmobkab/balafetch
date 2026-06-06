@@ -12,6 +12,7 @@ Usage: balafetch [OPTIONS] [CARD CATEGORY | ALIAS]
 Options:
   -h, --help           Show help information
   -t, --timeout int    Set the timeout for API requests in seconds (default 20)
+  -u, --update         Update balafetch to the latest version from GitHub
   -v, --version        Show version information
       --version-full   Show detailed version information
 Available categories (aliases in parentheses):
@@ -24,7 +25,9 @@ Available categories (aliases in parentheses):
 ## Options
 The balafetch CLI supports the following options:
 - `-h`, `--help`: Display help information about the CLI and its usage.
+- `-u`, `--update`: Update balafetch to the latest version from GitHub. This automatically downloads, verifies, and installs the new binary for your OS/architecture.
 - `-v`, `--version`: Display the current version of balafetch.
+- `--version-full`: Display detailed version information including build time and commit hash.
 - `-t <seconds>`, `--timeout <seconds>`: Set a custom timeout for the CLI operations, 0 for no timeout (default is 20 seconds),
     - Negative values are converted to their absolute value, so `-t -30` is the same as `-t 30`.
 
@@ -61,7 +64,7 @@ ALIAS (optional): Specify an alias for a card category. Aliases are alternative 
 ## FLAGS PRECEDENCE
 When multiple flags are provided, balafetch will prioritize them in the following order:
 1. `--help` (`-h`): If the help flag is present, balafetch will display the help information and ignore all other flags.
-2. `--version` (`-v`): If the version flag is present (and the help flag is not), balafetch will display the version information and ignore all other flags except for `--version-full`.
-3. `--version-full`: If this flag is present along with the version flag, balafetch will display detailed version information (including build time and commit hash) instead of just the version number.
-4. `--timeout` (`-t`): If the timeout flag is present (and neither the help nor version flags are present), balafetch will use the specified timeout value for API requests.
+2. `--version` (`-v`) and `--version-full`: If a version flag is present (and the help flag is not), balafetch will display the version information. The `--version-full` flag overrides `--version` to show detailed information including build time and commit hash.
+3. `--update` (`-u`): If the update flag is present (and neither the help nor version flags are present), balafetch will attempt to update to the latest release from GitHub.
+4. `--timeout` (`-t`): If the timeout flag is present (and none of the above flags are present), balafetch will use the specified timeout value for API requests.
 5. Normal operation: If none of the above flags are present, balafetch will proceed with its normal operation of fetching and displaying a random card from the specified category (or a random category if none is specified).

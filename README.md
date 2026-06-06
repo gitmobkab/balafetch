@@ -92,29 +92,50 @@ so i decided to make it myself, and here we are.
 
 #### 1. Download the binary
 
-Download the latest version of balafetch for your OS and architecture:
+**Linux/macOS/FreeBSD:**
 
+Download the latest version:
 ```bash
 curl -OL https://github.com/gitmobkab/balafetch/releases/latest/download/balafetch-{os}-{arch}
 ```
-Or download a specific version of balafetch:
 
+Download a specific version (e.g., V0.6.0):
 ```bash
-curl -O -L https://github.com/gitmobkab/balafetch/releases/download/{version}/balafetch-{os}-{arch}
+curl -OL https://github.com/gitmobkab/balafetch/releases/download/V0.6.0/balafetch-{os}-{arch}
 ```
-> [!NOTE]
-> On Windows, you must add `.exe` to the filename
 
-```bash
-# For balfetch V0.4.0 on Windows amd64 (64-bit)
-curl -O -L https://github.com/gitmobkab/balafetch/releases/download/V0.4.0/balafetch-windows-amd64.exe
+**Windows (PowerShell):**
 
-# or for the latest
+Download the latest version for your architecture:
+```powershell
+# For Windows amd64 (64-bit)
+Invoke-WebRequest -Uri "https://github.com/gitmobkab/balafetch/releases/latest/download/balafetch-windows-amd64.exe" -OutFile "balafetch-windows-amd64.exe"
+
+# For Windows arm64 (ARM 64-bit)
+Invoke-WebRequest -Uri "https://github.com/gitmobkab/balafetch/releases/latest/download/balafetch-windows-arm64.exe" -OutFile "balafetch-windows-arm64.exe"
+```
+
+Download a specific version (e.g., V0.8.0):
+```powershell
+# For Windows amd64
+Invoke-WebRequest -Uri "https://github.com/gitmobkab/balafetch/releases/download/V0.8.0/balafetch-windows-amd64.exe" -OutFile "balafetch-windows-amd64.exe"
+```
+
+**Windows (cmd.exe):**
+
+```cmd
+# For Windows amd64
 curl -OL https://github.com/gitmobkab/balafetch/releases/latest/download/balafetch-windows-amd64.exe
+
+# For Windows arm64
+curl -OL https://github.com/gitmobkab/balafetch/releases/latest/download/balafetch-windows-arm64.exe
 ```
+
+> [!NOTE]
+> The capital `V` in the version is important: use `V0.8.0`, not `v0.8.0`.
 
 Replace the following placeholders:
-- `{version}` - The version you want (e.g., `v0.4.0`, `V0.3.0`, etc.)
+- `{version}` - The version you want (e.g., `V0.4.0`, `V0.8.0`, etc.).
 - `{os}` - Your operating system (`linux`, `darwin` for macOS, `windows`, `freebsd`)
 - `{arch}` - Your CPU architecture (`amd64`, `arm64`, `arm`)
 
@@ -148,27 +169,47 @@ To ensure the integrity of the downloaded binary, you can verify its SHA256 chec
 
 **Get the expected checksum from the release notes**
 
-see the release notes for the version you downloaded, and find the SHA256 checksum for your specific OS/architecture binary. ( available in the "Assets" section of the release and since v0.4.0)
+See the release notes for the version you downloaded, and find the SHA256 checksum for your specific OS/architecture binary (available in the release notes since v0.4.0).
 
+**Linux/macOS/FreeBSD:**
 ```bash
-# Example: expected checksum for Linux AMD64 binary in v0.4.0
-bccd4f65...07b *dist/balafetch-linux-amd64
+# Example: expected checksum from release notes
+bccd4f65...07b  balafetch-linux-amd64
 
 # Compute the checksum of the downloaded file
-sha256sum balafetch-{os}-{arch}
+# For Linux/macOS amd64:
+sha256sum balafetch-linux-amd64
+# For Linux arm64:
+sha256sum balafetch-linux-arm64
+# For macOS amd64:
+sha256sum balafetch-darwin-amd64
+
+# Compare the computed checksum with the expected value
+# If they match, the file is valid. If not, do not use the file and try downloading again.
+```
+
+**Windows (PowerShell):**
+```powershell
+# Example: expected checksum from release notes
+bccd4f65...07b  balafetch-windows-amd64.exe
+
+# Compute the checksum of the downloaded file
+# For Windows amd64:
+(Get-FileHash balafetch-windows-amd64.exe -Algorithm SHA256).Hash
+# For Windows arm64:
+(Get-FileHash balafetch-windows-arm64.exe -Algorithm SHA256).Hash
 
 # Compare the computed checksum with the expected value
 # If they match, the file is valid. If not, do not use the file and try downloading again.
 ```
 
 
-#### 2. Install the binary
+#### 3. Install the binary
 
 **Linux/macOS/FreeBSD:**
 ```bash
 # Make the binary executable
 chmod +x balafetch-{os}-{arch}
-
 
 # Move to a directory in your PATH for system-wide installation
 sudo mv balafetch-{os}-{arch} /usr/local/bin/balafetch
@@ -180,20 +221,29 @@ sudo mv balafetch-{os}-{arch} /usr/local/bin/balafetch
 mv balafetch-{os}-{arch} ~/.local/bin/balafetch
 ```
 
-**Windows:**
+**Windows (PowerShell):**
 ```powershell
-# Rename the binary (if needed)
-ren balafetch-windows-{arch}.exe balafetch.exe
-
 # Move to a directory in your PATH (e.g., C:\Windows\System32 or add a custom directory to PATH)
-move balafetch.exe C:\Windows\System32\
+# Windows will find balafetch-windows-{arch}.exe or balafetch.exe
+Move-Item balafetch-windows-{arch}.exe C:\Windows\System32\balafetch.exe
 ```
 
-#### 3. Run it!
+Alternatively, rename and move in separate steps:
+```powershell
+Rename-Item balafetch-windows-{arch}.exe balafetch.exe
+Move-Item balafetch.exe C:\Windows\System32\
+```
 
-Start a new terminal and type:
+#### 4. Run it!
+
+Start a new terminal and run:
 ```bash
 balafetch
+```
+
+To verify the installation worked and see available options:
+```bash
+balafetch --help
 ```
 
 ### Manual Installation (From Source)
@@ -204,14 +254,14 @@ If there's no pre-built binary for your platform, you can build balafetch yourse
 - [git](https://git-scm.com/) (to download the project)
 - [Go](https://go.dev/) (to compile the project)
 
-**Build instructions:**
+**Linux/macOS/FreeBSD:**
 
 ```bash
 # Clone the repository
 git clone https://github.com/gitmobkab/balafetch.git
 cd balafetch
 
-# Build the project
+# Build the project (or use ./compile.sh for all platforms)
 go build ./cmd/balafetch/ -o balafetch
 
 # Install (system-wide)
@@ -221,6 +271,29 @@ sudo mv balafetch /usr/local/bin/
 mv balafetch ~/.local/bin/
 ```
 
+**Windows (PowerShell):**
+
+```powershell
+# Clone the repository
+git clone https://github.com/gitmobkab/balafetch.git
+cd balafetch
+
+# Build using compile.bat (recommended — includes version info and builds all platforms)
+.\compile.bat .\cmd\balafetch\ 0.8.0
+
+# Or build manually for current platform (version info will be "dev")
+go build .\cmd\balafetch\ -o balafetch.exe
+
+# Move to a directory in your PATH (e.g., C:\Windows\System32)
+Move-Item balafetch.exe C:\Windows\System32\balafetch.exe -Force
+```
+
+> [!TIP]
+> Use `compile.bat` to build binaries for all platforms and properly inject version information. This is recommended over manual `go build` for release builds.
+
+> [!NOTE]
+> On Windows, you may need administrator privileges to move files to `C:\Windows\System32\`. Alternatively, add a custom directory to your PATH environment variable.
+
 ## Usage
 ```bash
 balafetch - The stupid balatro flavoured fastfetch wrapper
@@ -228,6 +301,7 @@ Usage: balafetch [OPTIONS] [CARD CATEGORY | ALIAS]
 Options:
   -h, --help           Show help information
   -t, --timeout int    Set the timeout for API requests in seconds (default 20)
+  -u, --update         Update balafetch to the latest version from GitHub
   -v, --version        Show version information
       --version-full   Show detailed version information
 Available categories (aliases in parentheses):
@@ -238,7 +312,26 @@ Available categories (aliases in parentheses):
  - vouchers (voucher)
 ```
 
-you can check the [CLI documentation](docs/cli.md) for more details on usage.
+### Self-Update
+
+To update balafetch to the latest version without manual downloading:
+
+```bash
+balafetch --update
+# or
+balafetch -u
+```
+
+This will automatically:
+1. Check the latest release on GitHub
+2. Download the appropriate binary for your OS/architecture
+3. Verify the binary integrity via SHA256 checksum
+4. Replace your current balafetch executable
+
+> [!NOTE]
+> Self-update requires write permissions to your balafetch installation directory. On Linux/macOS, system-wide installs may require elevated privileges (`sudo balafetch --update`).
+
+You can check the [CLI documentation](docs/cli.md) for more details on usage.
 
 
 ## How It Works
